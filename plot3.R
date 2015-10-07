@@ -1,5 +1,7 @@
 plot3 <- function()
 {
+  ##Read the input file and subset it for just the two days February 1, 2007 and February 2, 2007
+  ##Also convert the date and time values to operable formats
   library(dplyr)
   datas <- tbl_df(read.table("household_power_consumption.txt", header=TRUE, sep= ";", na.strings = c("?","")))
   new_data <- datas
@@ -8,10 +10,16 @@ plot3 <- function()
   sub_data$timetemp <- paste(sub_data$Date, sub_data$Time)
   sub_data$Time <- strptime(sub_data$timetemp, format = "%Y-%m-%d %H:%M:%S")
   sub_data <- sub_data[,c(1,2,10,3:9)]
+  
+  ##Make the plots on the same plotting area
   plot(sub_data$Time,sub_data$Sub_metering_1,pch='.',xlab="",ylab="Energy sub metering", type="l")
   lines(sub_data$Time,sub_data$Sub_metering_2,col="red")
   lines(sub_data$Time,sub_data$Sub_metering_3,col="blue")
+  
+  ##Add a legend
   legend("topright",pch=rep("-",4),col=c("black","red","blue"),legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
+  
+  ##Copy plot to PNG file and close the device
   dev.copy(png,'plot3.png')
   dev.off()
 }
